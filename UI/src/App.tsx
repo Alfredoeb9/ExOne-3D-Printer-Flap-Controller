@@ -23,7 +23,7 @@ function App() {
         <section id="side-by-side" className='flex gap-4'>
           <Sidebar />
 
-          <main className="">
+          <main className="flex-1">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/layers" element={<LayerConfiguration />} />

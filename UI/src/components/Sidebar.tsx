@@ -9,7 +9,7 @@ const navigation = [
 
 export default function Sidebar() {
   return (
-    <aside className="flex min-h-[calc(100vh-120px)] w-[255px] shrink-0 flex-col bg-gray-800 p-4 text-white">
+    <aside className="flex min-h-[calc(100vh-120px)] max-w-[255px] shrink-1 flex-col bg-gray-800 p-4 text-white">
       <nav aria-label="Main navigation" className="flex-1">
         <ul className="space-y-2">
           {navigation.map(({ to, label }) => (
@@ -30,7 +30,10 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      <div className="p-2">System Status</div>
+      <div className="p-2"><span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>System Status</div>
+
+      {/* system version */}
+      <div className="p-2 text-sm text-gray-400">v1.0.0</div>
     </aside>
   )
 }
