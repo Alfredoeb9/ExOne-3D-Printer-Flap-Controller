@@ -1,0 +1,2 @@
+cd UI || exit 1
+npm run test:run
