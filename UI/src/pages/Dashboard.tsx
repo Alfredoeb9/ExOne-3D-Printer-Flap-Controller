@@ -4,6 +4,7 @@ export default function Dashboard() {
         <div>
             <h1 className="text-2xl font-bold text-white">Dashboard</h1>
             <p>Monitor system status and current print progress</p>
+            testing
 
             <div id="status_tabs" className="flex gap-4">
                 <div className="status_tab bg-slate-800 p-4 rounded">
