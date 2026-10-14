@@ -17,13 +17,13 @@ function App() {
 
   return (
     <>
-      <section className="min-h-screen bg-slate-950 p-8 text-white">
+      <section className="flex h-dvh flex-col overflow-hidden bg-slate-950 p-8 text-white">
         <Header />
     
-        <section id="side-by-side" className='flex gap-4'>
+        <section id="side-by-side" className='flex min-h-0 flex-1 gap-4'>
           <Sidebar />
 
-          <main className="flex-1">
+          <main className="min-h-0 min-w-0 flex-1 overflow-auto">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/layers" element={<LayerConfiguration />} />
