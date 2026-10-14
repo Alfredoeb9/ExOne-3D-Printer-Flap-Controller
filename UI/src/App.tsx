@@ -1,11 +1,16 @@
+import { Route, Routes } from 'react-router'
+
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+// import heroImg from './assets/hero.png'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from './assets/vite.svg'
 import './App.css'
 import Dashboard from './pages/Dashboard'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
+import LayerConfiguration from './pages/LayerConfiguration'
+import ManualControl from './pages/ManualControl'
+import Settings from './pages/Settings'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,8 +20,18 @@ function App() {
       <section className="min-h-screen bg-slate-950 p-8 text-white">
         <Header />
     
-        <section id="side-by-side">
+        <section id="side-by-side" className='flex gap-4'>
           <Sidebar />
+
+          <main className="">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/layers" element={<LayerConfiguration />} />
+              <Route path="/manual" element={<ManualControl />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<h1>Page not found</h1>} />
+            </Routes>
+          </main>
           {/* <Dashboard /> */}
         </section>
         

@@ -1,28 +1,36 @@
+import { NavLink } from 'react-router'
+
+const navigation = [
+  { to: '/', label: 'Dashboard' },
+  { to: '/layers', label: 'Layer Configuration' },
+  { to: '/manual', label: 'Manual Control' },
+  { to: '/settings', label: 'Settings' },
+]
+
 export default function Sidebar() {
-    return (
-        <div className="flex flex-col min-h-[calc(100vh-120px)] w-[255px] space-y-4 p-4 bg-gray-800 text-white">
-            <div className="flex flex-1 justify-between flex-col">
-                <ul className="space-y-2">
-                    <li id="active" className="hover:bg-gray-700 cursor-pointer p-2 rounded">
-                        <a href="#">Dashboard</a>
-                        </li>
-                    <li className="hover:bg-gray-700 cursor-pointer p-2 rounded">
-                        <a href="#">Layer Configuration</a>
-                        </li>
-                    <li className="hover:bg-gray-700 cursor-pointer p-2 rounded">
-                        <a href="#">Manual Control</a></li>
-                    <li className="hover:bg-gray-700 cursor-pointer p-2 rounded">
-                        <a href="#">Settings</a>
-                    </li>
+  return (
+    <aside className="flex min-h-[calc(100vh-120px)] w-[255px] shrink-0 flex-col bg-gray-800 p-4 text-white">
+      <nav aria-label="Main navigation" className="flex-1">
+        <ul className="space-y-2">
+          {navigation.map(({ to, label }) => (
+            <li key={to}>
+              <NavLink
+                to={to}
+                end={to === '/'}
+                className={({ isActive }) =>
+                  `block rounded p-2 hover:bg-gray-700 ${
+                    isActive ? 'bg-gray-700 font-semibold' : ''
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-                    
-                </ul>
-
-                <ul className="space-y-2">
-                    <li className="hover:bg-gray-700 cursor-pointer p-2 rounded">System Status</li>
-                </ul>
-            </div>
-            
-        </div>
-    );
+      <div className="p-2">System Status</div>
+    </aside>
+  )
 }
