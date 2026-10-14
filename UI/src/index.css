@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+#active {
+  background-color: #1ecf1b; /* Tailwind's gray-700 */
+}
+
 /* :root {
   --text: #6b6375;
   --text-h: #08060d;

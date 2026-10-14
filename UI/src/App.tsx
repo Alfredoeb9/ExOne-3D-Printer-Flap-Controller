@@ -5,6 +5,7 @@ import viteLogo from './assets/vite.svg'
 import './App.css'
 import Dashboard from './pages/Dashboard'
 import Header from './components/Header'
+import Sidebar from './components/Sidebar'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,8 +16,8 @@ function App() {
         <Header />
     
         <section id="side-by-side">
-          {/* Side bar */}
-          <Dashboard />
+          <Sidebar />
+          {/* <Dashboard /> */}
         </section>
         
         {/* <div className="hero">
@@ -121,9 +122,9 @@ function App() {
           </ul>
         </div>
       </section> */}
-
+{/* 
       <div className="ticks"></div>
-      <section id="spacer"></section>
+      <section id="spacer"></section> */}
     </>
   )
 }
