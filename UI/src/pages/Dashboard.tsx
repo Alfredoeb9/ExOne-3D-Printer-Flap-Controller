@@ -46,11 +46,48 @@ const activities = [
         timestamp: "2026-10-14T10:10:00",
         message: "Flap A closed",
     },
+    {
+        id: "event-10",
+        timestamp: "2026-10-14T10:15:00",
+        message: "Flap B opened",
+    },
+    {
+        id: "event-11",
+        timestamp: "2026-10-14T10:20:00",
+        message: "Flap B closed",
+    },
+    {
+        id: "event-12",
+        timestamp: "2026-10-14T10:25:00",
+        message: "Layer 43 reached",
+    },
+    {
+        id: "event-13",
+        timestamp: "2026-10-14T10:30:00",
+        message: "Flap A opened",
+    }, 
+    {
+        id: "event-14",
+        timestamp: "2026-10-14T10:35:00",
+        message: "Flap A closed",
+    },
+    {
+        id: "event-15",
+        timestamp: "2026-10-14T10:40:00",
+        message: "Flap B opened",
+    },
+    {
+        id: "event-16",
+        timestamp: "2026-10-14T10:45:00",
+        message: "Flap B closed",
+    }
 ];
 
 const sortedActivities = [...activities].sort(
     (first, second) => Date.parse(second.timestamp) - Date.parse(first.timestamp),
 );
+
+const progress = "20%";
 
 export default function Dashboard() {
     return (
@@ -78,8 +115,8 @@ export default function Dashboard() {
                         <p className="text-green-500 pb-1">🟢Connected</p>
                     </div>
                     <div className="meta_data flex flex-col gap-1">
-                        <p className="text-white"><span className="text-slate-400">IP Address: </span>192.168.1.100</p>
-                        <p className="text-white"><span className="text-slate-400">API: </span>Online</p>
+                        <p className="text-[#48A3FF]"><span className="text-slate-400">IP Address: </span>192.168.1.100</p>
+                        <p className="text-[#48A3FF]"><span className="text-slate-400">API: </span>Online</p>
                     </div>
                     
                 </div>
@@ -87,11 +124,14 @@ export default function Dashboard() {
                     <div>
                         <h2 className="text-lg font-semibold text-slate-400 pb-1">Current Layer</h2>
                         <p className="text-white"> <span className="text-2xl">42</span> / 100</p>
-                        
                     </div>
 
                     <div className="w-full bg-slate-700 h-4 rounded mt-3">
-                        <div className="bg-green-500 h-4 rounded" style={{ width: "42%" }}></div>
+                        {parseInt(progress) >= 0 && parseInt(progress) < 100 ? (
+                            <div className={`bg-yellow-500 h-4 rounded ${"transition-all duration-500"}`} style={{ width: progress }}></div>
+                        ) : (
+                            <div className={`bg-green-500 h-4 rounded ${"transition-all duration-500"}`} style={{ width: progress }}></div>
+                        )}
                     </div>
                 </div>
                 <div className="status_tab bg-slate-800 p-4 rounded">
@@ -130,7 +170,7 @@ export default function Dashboard() {
                 {/* recent activiy */}
                 <div
                     id="recent_activity"
-                    className="flex h-80 min-w-0 flex-col rounded bg-slate-800 p-4 xl:w-80 xl:shrink-0"
+                    className="flex h-80 min-w-0 flex-col rounded bg-slate-800 p-4 xl:w-80 xl:shrink-0 2xl:h-100"
                 >
                     <h2 className="shrink-0 pb-3 text-lg font-semibold text-slate-400">
                         Recent Activity
