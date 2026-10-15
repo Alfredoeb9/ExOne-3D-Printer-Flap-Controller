@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { runManualTest } from "../services/api";
+import NotificationPopUp from "../components/notificationPopUp";
 
 // const progress = "100%";
 
@@ -11,8 +13,23 @@ export default function ManualControl() {
     const handleFlapBChange = (state: string) => setFlapB(state);
     const [flapAStatus, setFlapAStatus] = useState("OK");
     const [flapBStatus, setFlapBStatus] = useState("OK");
+    const [testError, setTestError] = useState("");
     // const handleFlapAStatusChange = (status: string) => setFlapAStatus(status);
     // const handleFlapBStatusChange = (status: string) => setFlapBStatus(status);
+
+    async function handleRunTest() {
+        setTestError("");
+
+        try {
+            const result = await runManualTest();
+            setIsTestRunning(result.status === "running");
+        } catch (error) {
+            setTestError(
+                error instanceof Error ? error.message : "Could not start the test",
+            );
+        }
+    }
+
     return (
         <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#061321] px-3 py-4 text-left text-slate-100">
             <header className="mb-3 shrink-0">
@@ -122,10 +139,13 @@ export default function ManualControl() {
                 <h2 className="text-xl font-bold text-white pb-1">Test Sequence</h2>
                 <p className="mb-2 text-xs text-slate-400 pb-2">Run the test sequence for the flap controller.</p>
                 <div className="flex gap-3">
-                    <button className={`cursor-pointer rounded ${isTestRunning ? "bg-green-500" : "bg-slate-800"} px-4 py-2 text-white xl:px-8`}>Run Test</button>
+                                {/* <button className={`cursor-pointer rounded ${isTestRunning ? "bg-green-500" : "bg-slate-800"} px-4 py-2 text-white xl:px-8`}>Run Test</button> */}
+                    <button className={`cursor-pointer rounded ${isTestRunning ? "bg-green-500" : "bg-slate-800"} px-4 py-2 text-white xl:px-8`} onClick={handleRunTest}>Run Test</button>
                     <button className={`cursor-pointer rounded ${isTestRunning ? "bg-slate-800" : "bg-blue-500"} px-4 py-2 text-white xl:px-8`}>Stop Test</button>
                 </div>
             </div>
+
+            {testError && <NotificationPopUp message={testError} status="error" />}
         </div>
     );
 }
