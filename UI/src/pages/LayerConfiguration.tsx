@@ -1,29 +1,57 @@
-const dummyLayers = [
-    { id: 1, flapA: "Open", flapB: "Closed" },
-    { id: 10, flapA: "Closed", flapB: "Open" },
-    { id: 20, flapA: "Open", flapB: "Open" },
-    { id: 30, flapA: "Closed", flapB: "Closed" },
-    { id: 50, flapA: "Open", flapB: "Closed" },
-    { id: 60, flapA: "Closed", flapB: "Open" },
-    { id: 70, flapA: "Open", flapB: "Closed" },
-    { id: 80, flapA: "Closed", flapB: "Open" },
-    { id: 90, flapA: "Open", flapB: "Open" },
-    { id: 100, flapA: "Closed", flapB: "Closed" },
-    { id: 110, flapA: "Open", flapB: "Closed" },
-    { id: 120, flapA: "Closed", flapB: "Open" },
-    { id: 130, flapA: "Open", flapB: "Open" },
-    { id: 140, flapA: "Closed", flapB: "Closed" },
-    { id: 150, flapA: "Open", flapB: "Closed" },
-    { id: 160, flapA: "Closed", flapB: "Open" },
-    { id: 170, flapA: "Open", flapB: "Open" },
-    { id: 180, flapA: "Closed", flapB: "Closed" },
-    { id: 190, flapA: "Open", flapB: "Closed" },
-    { id: 200, flapA: "Closed", flapB: "Open" },
-    { id: 210, flapA: "Open", flapB: "Open" },
-    { id: 220, flapA: "Closed", flapB: "Closed" },
-];
+import { useEffect, useRef, useState } from "react";
+
+// const dummyLayers = [
+//     { id: 1, flapA: "Open", flapB: "Closed" },
+//     { id: 10, flapA: "Closed", flapB: "Open" },
+//     { id: 20, flapA: "Open", flapB: "Open" },
+//     { id: 30, flapA: "Closed", flapB: "Closed" },
+//     { id: 50, flapA: "Open", flapB: "Closed" },
+//     { id: 60, flapA: "Closed", flapB: "Open" },
+//     { id: 70, flapA: "Open", flapB: "Closed" },
+//     { id: 80, flapA: "Closed", flapB: "Open" },
+//     { id: 90, flapA: "Open", flapB: "Open" },
+//     { id: 100, flapA: "Closed", flapB: "Closed" },
+//     { id: 110, flapA: "Open", flapB: "Closed" },
+//     { id: 120, flapA: "Closed", flapB: "Open" },
+//     { id: 130, flapA: "Open", flapB: "Open" },
+//     { id: 140, flapA: "Closed", flapB: "Closed" },
+//     { id: 150, flapA: "Open", flapB: "Closed" },
+//     { id: 160, flapA: "Closed", flapB: "Open" },
+//     { id: 170, flapA: "Open", flapB: "Open" },
+//     { id: 180, flapA: "Closed", flapB: "Closed" },
+//     { id: 190, flapA: "Open", flapB: "Closed" },
+//     { id: 200, flapA: "Closed", flapB: "Open" },
+//     { id: 210, flapA: "Open", flapB: "Open" },
+//     { id: 220, flapA: "Closed", flapB: "Closed" },
+// ];
 
 export default function LayerConfiguration() {
+    const [layers, setLayers] = useState<{ id: number; flapA: string; flapB: string }[]>([]);
+    const [isAddLayerOpen, setIsAddLayerOpen] = useState(false);
+    const dialogRef = useRef<HTMLDialogElement>(null);
+
+    useEffect(() => {
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+
+        if (isAddLayerOpen && !dialog.open) dialog.showModal();
+        if (!isAddLayerOpen && dialog.open) dialog.close();
+    }, [isAddLayerOpen]);
+
+    function handleAddLayer(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const formData = new FormData(event.currentTarget);
+        const newLayer = {
+            id: Number(formData.get("layer")),
+            flapA: String(formData.get("flapA")),
+            flapB: String(formData.get("flapB")),
+        };
+
+        setLayers((currentLayers) => [...currentLayers, newLayer]);
+        setIsAddLayerOpen(false);
+    }
+
     return (
         <div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
             <div className="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-3">
@@ -32,7 +60,7 @@ export default function LayerConfiguration() {
                     <p className="text-slate-400">Configure the settings for each layer of your print</p>
                 </div>
 
-                <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">
+                <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white" onClick={() => setIsAddLayerOpen(true)}>
                     + Add Layer
                 </button>
             </div>
@@ -49,7 +77,7 @@ export default function LayerConfiguration() {
                     </thead>
                     <tbody>
                         {/* Example row */}
-                        {dummyLayers.map((layer) => (
+                        {layers && layers.map((layer) => (
                             <tr key={layer.id} className="bg-[#0C1B2C]">
                                 <td className="border px-4 py-2">{layer.id}</td>
                                 <td className={`border px-4 py-2 ${layer.flapA === "Open" ? "bg-[#086B4B]" : "bg-[#25394D]"}`}>{layer.flapA}</td>
@@ -75,7 +103,63 @@ export default function LayerConfiguration() {
                     <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Export JSON</button>
                 </div>
             </div>
-            
+
+            <dialog
+                ref={dialogRef}
+                aria-labelledby="add-layer-title"
+                onCancel={(event) => {
+                    event.preventDefault();
+                    setIsAddLayerOpen(false);
+                }}
+                className="m-auto w-[min(28rem,calc(100%-2rem))] rounded-md border border-slate-600 bg-[#0B1A2B] p-0 text-white backdrop:bg-black/60"
+            >
+                <form onSubmit={handleAddLayer} className="space-y-4 p-5">
+                    <h2 id="add-layer-title" className="text-xl font-semibold">
+                        Add Layer
+                    </h2>
+
+                    <label className="block text-sm text-slate-300">
+                        Layer number
+                        <input
+                            name="layer"
+                            type="number"
+                            min="1"
+                            required
+                            className="mt-1 w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white"
+                        />
+                    </label>
+
+                    {(["flapA", "flapB"] as const).map((flap) => (
+                        <label key={flap} className="block text-sm text-slate-300">
+                            {flap === "flapA" ? "Flap A" : "Flap B"}
+                            <select
+                                name={flap}
+                                defaultValue="Closed"
+                                className="mt-1 w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white"
+                            >
+                                <option>Open</option>
+                                <option>Closed</option>
+                            </select>
+                        </label>
+                    ))}
+
+                    <div className="flex justify-end gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setIsAddLayerOpen(false)}
+                            className="rounded bg-slate-700 px-4 py-2"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="rounded bg-blue-500 px-4 py-2"
+                        >
+                            Add Layer
+                        </button>
+                    </div>
+                </form>
+            </dialog>
         </div>
     );
 }
