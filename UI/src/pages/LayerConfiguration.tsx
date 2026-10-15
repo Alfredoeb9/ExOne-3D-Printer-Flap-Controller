@@ -1,4 +1,3 @@
-// Create dummy data for the layer table
 const dummyLayers = [
     { id: 1, flapA: "Open", flapB: "Closed" },
     { id: 10, flapA: "Closed", flapB: "Open" },
@@ -38,7 +37,6 @@ export default function LayerConfiguration() {
                 </button>
             </div>
 
-            {/* Create a responsive and dynamic table with Layer flap A flab B and actions with action having two buttons (edit and delete) */}
             <div className="min-h-0 flex-1 overflow-auto">
                 <table className="min-w-full bg-slate-800 text-white">
                     <thead className="sticky top-0 z-10 bg-[#12253A]">
@@ -66,7 +64,6 @@ export default function LayerConfiguration() {
                 </table>
             </div>
 
-            {/* Save recipe settings container with a recipe settings header two inputs fields one with recipe name and other total laers and two cuttons save recipe and export JSON */}
             <div className="mt-4 flex flex-col gap-3 border border-slate-600 p-4 bg-[#0B1A2B]">
                 <h2 className="text-xl font-bold text-white">Recipe Settings</h2>
                 <div className="flex gap-3">
