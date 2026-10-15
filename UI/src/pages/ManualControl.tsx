@@ -1,6 +1,18 @@
-const progress = "100%";
+import { useState } from "react";
+
+// const progress = "100%";
 
 export default function ManualControl() {
+    const [flapA, setFlapA] = useState("Close");
+    const [flapB, setFlapB] = useState("Close");
+    const [progress, setProgress] = useState("100%");
+    const [isTestRunning, setIsTestRunning] = useState(true);
+    const handleFlapAChange = (state: string) => setFlapA(state);
+    const handleFlapBChange = (state: string) => setFlapB(state);
+    const [flapAStatus, setFlapAStatus] = useState("OK");
+    const [flapBStatus, setFlapBStatus] = useState("OK");
+    // const handleFlapAStatusChange = (status: string) => setFlapAStatus(status);
+    // const handleFlapBStatusChange = (status: string) => setFlapBStatus(status);
     return (
         <div className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-[#061321] px-3 py-4 text-left text-slate-100">
             <header className="mb-3 shrink-0">
@@ -15,13 +27,19 @@ export default function ManualControl() {
                         <h2 className="text-sm font-semibold">Flap A</h2>
                     </div>
 
-                    <p className="mt-1 text-xs text-emerald-400">Open</p>
+                    <p className={`mt-1 text-xs ${flapA === "Open" ? "text-emerald-400" : "text-slate-400"}`}>{flapA}</p>
 
                     <div className="mt-2 grid grid-cols-2 gap-2 h-20 2xl:h-[200px]">
-                        <button className="cursor-pointer rounded bg-emerald-500 px-3 py-2 text-sm text-white">
+                        <button
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapA === "Open" ? "bg-emerald-500" : "bg-slate-800"}`}
+                            onClick={() => handleFlapAChange("Open")}
+                        >
                             Open
                         </button>
-                        <button className="cursor-pointer rounded bg-slate-800 px-3 py-2 text-sm text-white">
+                        <button
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapA === "Close" ? "bg-blue-500" : "bg-slate-800"}`}
+                            onClick={() => handleFlapAChange("Close")}
+                        >
                             Close
                         </button>
                     </div>
@@ -42,11 +60,11 @@ export default function ManualControl() {
                     <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-700 pt-2 text-xs absolute bottom-0 w-full pb-4">
                         <div>
                             <p className="text-slate-400">Last Command</p>
-                            <p>Open</p>
+                            <p>{flapA}</p>
                         </div>
                         <div>
                             <p className="text-slate-400">Status</p>
-                            <p className="text-emerald-400">OK</p>
+                            <p className={`text-emerald-400 ${flapAStatus === "OK" ? "text-emerald-400" : "text-slate-400"}`}>{flapAStatus}</p>
                         </div>
                     </div>
                 </section>
@@ -57,13 +75,19 @@ export default function ManualControl() {
                         <h2 className="text-sm font-semibold">Flap B</h2>
                     </div>
 
-                    <p className="mt-1 text-xs text-emerald-400">Open</p>
+                    <p className={`mt-1 text-xs ${flapB === "Open" ? "text-emerald-400" : "text-slate-400"}`}>{flapB}</p>
 
                     <div className="mt-2 grid grid-cols-2 gap-2 h-20 2xl:h-[200px]">
-                        <button className="cursor-pointer rounded bg-emerald-500 px-3 py-2 text-sm text-white">
+                        <button
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapB === "Open" ? "bg-emerald-500" : "bg-slate-800"}`}
+                            onClick={() => handleFlapBChange("Open")}
+                        >
                             Open
                         </button>
-                        <button className="cursor-pointer rounded bg-slate-800 px-3 py-2 text-sm text-white">
+                        <button
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapB === "Close" ? "bg-blue-500" : "bg-slate-800"}`}
+                            onClick={() => handleFlapBChange("Close")}
+                        >
                             Close
                         </button>
                     </div>
@@ -84,11 +108,11 @@ export default function ManualControl() {
                     <div className="mt-2 grid grid-cols-2 gap-2 border-t border-slate-700 pt-2 text-xs absolute bottom-0 w-full pb-4">
                         <div>
                             <p className="text-slate-400">Last Command</p>
-                            <p>Open</p>
+                            <p>{flapB}</p>
                         </div>
                         <div>
                             <p className="text-slate-400">Status</p>
-                            <p className="text-emerald-400">OK</p>
+                            <p className={`text-emerald-400 ${flapBStatus === "OK" ? "text-emerald-400" : "text-slate-400"}`}>{flapBStatus}</p>
                         </div>
                     </div>
                 </section>
@@ -98,8 +122,8 @@ export default function ManualControl() {
                 <h2 className="text-xl font-bold text-white pb-1">Test Sequence</h2>
                 <p className="mb-2 text-xs text-slate-400 pb-2">Run the test sequence for the flap controller.</p>
                 <div className="flex gap-3">
-                    <button className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white xl:px-8">Run Test</button>
-                    <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white xl:px-8">Stop Test</button>
+                    <button className={`cursor-pointer rounded ${isTestRunning ? "bg-green-500" : "bg-slate-800"} px-4 py-2 text-white xl:px-8`}>Run Test</button>
+                    <button className={`cursor-pointer rounded ${isTestRunning ? "bg-slate-800" : "bg-blue-500"} px-4 py-2 text-white xl:px-8`}>Stop Test</button>
                 </div>
             </div>
         </div>
