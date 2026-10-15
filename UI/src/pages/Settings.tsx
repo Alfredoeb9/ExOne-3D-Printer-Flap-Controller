@@ -9,26 +9,30 @@ export default function Settings() {
             </div>
 
             <div className="min-h-0 flex gap-6 overflow-auto">
-                <div className="connection flex-1 bg-slate-800 p-4 rounded-md">
+                <div className="connection flex flex-1 flex-col gap-10 bg-slate-800 p-4 rounded-md">
                     <h2 className="text-xl font-bold text-white">Connections</h2>
 
-                    <div className="printer">
-                        <h3 className="text-md font-bold text-slate-300">Printer Connection</h3>
+                    <div className="flex flex-col gap-4">
+                        <div className="printer">
+                            <h3 className="text-md font-bold text-slate-300">Printer Connection</h3>
 
-                        <div className="flex flex-row justify-between gap-3">
-                            <p className="text-slate-400">🔴 Not connected</p>
-                            <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Configure</button>
+                            <div className="flex flex-row justify-between gap-3">
+                                <p className="text-slate-400">🔴 Not connected</p>
+                                <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Configure</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="raspberry-pi">
-                        <h3 className="text-md font-bold text-slate-300">Raspberry Pi</h3>
+                        <div className="raspberry-pi">
+                            <h3 className="text-md font-bold text-slate-300">Raspberry Pi</h3>
 
-                        <div className="flex flex-row justify-between gap-3">
-                            <p className="text-slate-400">🔴 Not connected</p>
-                            <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Configure</button>
+                            <div className="flex flex-row justify-between gap-3">
+                                <p className="text-slate-400">🔴 Not connected</p>
+                                <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Configure</button>
+                            </div>
                         </div>
+
                     </div>
+                    
                 </div>
 
                 <div className="general flex-1 bg-slate-800 p-4 rounded-md">
@@ -116,7 +120,7 @@ export default function Settings() {
                         </label>
                     </div>
 
-                    <div className="source">
+                    <div className="source mt-4">
                         <h3>Layer Source</h3>
                         <div className="flex gap-4">
                             <input
@@ -125,7 +129,7 @@ export default function Settings() {
                                 id="layer-source"
                                 className="mt-2 pl-4 block w-full rounded-md border-slate-600 bg-slate-700 text-slate-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
                             />
-                            <button className="mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Configure</button>
+                            <button className="cursor-pointer mt-2 rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Configure</button>
                         </div>
                         
                     </div>

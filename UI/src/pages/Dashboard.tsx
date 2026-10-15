@@ -170,7 +170,7 @@ export default function Dashboard() {
                 {/* recent activiy */}
                 <div
                     id="recent_activity"
-                    className="flex h-80 min-w-0 flex-col rounded bg-slate-800 p-4 xl:w-80 xl:shrink-0 2xl:h-140"
+                    className="flex h-80 min-w-0 flex-col rounded bg-slate-800 p-4 xl:w-80 xl:shrink-0 2xl:h-120"
                 >
                     <h2 className="shrink-0 pb-3 text-lg font-semibold text-slate-400">
                         Recent Activity
