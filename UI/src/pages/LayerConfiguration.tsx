@@ -1,32 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
-// const dummyLayers = [
-//     { id: 1, flapA: "Open", flapB: "Closed" },
-//     { id: 10, flapA: "Closed", flapB: "Open" },
-//     { id: 20, flapA: "Open", flapB: "Open" },
-//     { id: 30, flapA: "Closed", flapB: "Closed" },
-//     { id: 50, flapA: "Open", flapB: "Closed" },
-//     { id: 60, flapA: "Closed", flapB: "Open" },
-//     { id: 70, flapA: "Open", flapB: "Closed" },
-//     { id: 80, flapA: "Closed", flapB: "Open" },
-//     { id: 90, flapA: "Open", flapB: "Open" },
-//     { id: 100, flapA: "Closed", flapB: "Closed" },
-//     { id: 110, flapA: "Open", flapB: "Closed" },
-//     { id: 120, flapA: "Closed", flapB: "Open" },
-//     { id: 130, flapA: "Open", flapB: "Open" },
-//     { id: 140, flapA: "Closed", flapB: "Closed" },
-//     { id: 150, flapA: "Open", flapB: "Closed" },
-//     { id: 160, flapA: "Closed", flapB: "Open" },
-//     { id: 170, flapA: "Open", flapB: "Open" },
-//     { id: 180, flapA: "Closed", flapB: "Closed" },
-//     { id: 190, flapA: "Open", flapB: "Closed" },
-//     { id: 200, flapA: "Closed", flapB: "Open" },
-//     { id: 210, flapA: "Open", flapB: "Open" },
-//     { id: 220, flapA: "Closed", flapB: "Closed" },
-// ];
-
 export default function LayerConfiguration() {
     const [layers, setLayers] = useState<{ id: number; flapA: string; flapB: string }[]>([]);
+    const [editingLayerId, setEditingLayerId] = useState<number | null>(null);
     const [isAddLayerOpen, setIsAddLayerOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -48,8 +24,36 @@ export default function LayerConfiguration() {
             flapB: String(formData.get("flapB")),
         };
 
-        setLayers((currentLayers) => [...currentLayers, newLayer]);
+        setLayers((currentLayers) => {
+            if (editingLayerId !== null) {
+                return currentLayers.map((layer) => (layer.id === editingLayerId ? newLayer : layer));
+            }
+            return [...currentLayers, newLayer];
+        });
+
         setIsAddLayerOpen(false);
+        setEditingLayerId(null);
+    }
+    
+    function handleEditLayer(id: number) {
+        const layerToEdit = layers.find((layer) => layer.id === id);
+        if (!layerToEdit) return;
+
+        setEditingLayerId(id);
+        setIsAddLayerOpen(true);
+
+        setTimeout(() => {
+            const form = dialogRef.current?.querySelector("form");
+            if (!form) return;
+
+            (form.elements.namedItem("layer") as HTMLInputElement).value = String(layerToEdit.id);
+            (form.elements.namedItem("flapA") as HTMLSelectElement).value = layerToEdit.flapA;
+            (form.elements.namedItem("flapB") as HTMLSelectElement).value = layerToEdit.flapB;
+        }, 0);
+    }
+    
+    function handleDeleteLayer(id: number) {
+        setLayers((currentLayers) => currentLayers.filter((layer) => layer.id !== id));
     }
 
     return (
@@ -76,15 +80,14 @@ export default function LayerConfiguration() {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* Example row */}
                         {layers && layers.map((layer) => (
                             <tr key={layer.id} className="bg-[#0C1B2C]">
                                 <td className="border px-4 py-2">{layer.id}</td>
                                 <td className={`border px-4 py-2 ${layer.flapA === "Open" ? "bg-[#086B4B]" : "bg-[#25394D]"}`}>{layer.flapA}</td>
                                 <td className={`border px-4 py-2 ${layer.flapB === "Open" ? "bg-[#086B4B]" : "bg-[#25394D]"}`}>{layer.flapB}</td>
                                 <td className="flex border px-4 py-2 justify-center">
-                                    <button className="cursor-pointer mr-2 rounded bg-yellow-500 px-2 py-1 text-white">✎</button>
-                                    <button className="cursor-pointer rounded bg-red-500 px-2 py-1 text-white">✖</button>
+                                    <button className="cursor-pointer mr-2 rounded bg-yellow-500 px-2 py-1 text-white" onClick={() => handleEditLayer(layer.id)}>✎</button>
+                                    <button className="cursor-pointer rounded bg-red-500 px-2 py-1 text-white" onClick={() => handleDeleteLayer(layer.id)}>✖</button>
                                 </td>
                             </tr>
                         ))}
@@ -132,13 +135,14 @@ export default function LayerConfiguration() {
                     {(["flapA", "flapB"] as const).map((flap) => (
                         <label key={flap} className="block text-sm text-slate-300">
                             {flap === "flapA" ? "Flap A" : "Flap B"}
+
                             <select
                                 name={flap}
                                 defaultValue="Closed"
-                                className="mt-1 w-full rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white"
+                                className="mt-1 w-full cursor-pointer rounded border border-slate-600 bg-slate-800 px-3 py-2 text-white"
                             >
-                                <option>Open</option>
-                                <option>Closed</option>
+                                <option className="cursor-pointer">Open</option>
+                                <option className="cursor-pointer">Closed</option>
                             </select>
                         </label>
                     ))}
@@ -147,13 +151,13 @@ export default function LayerConfiguration() {
                         <button
                             type="button"
                             onClick={() => setIsAddLayerOpen(false)}
-                            className="rounded bg-slate-700 px-4 py-2"
+                            className="rounded bg-slate-700 px-4 py-2 cursor-pointer"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="rounded bg-blue-500 px-4 py-2"
+                            className="rounded bg-blue-500 px-4 py-2 cursor-pointer"
                         >
                             Add Layer
                         </button>
