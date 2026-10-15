@@ -23,7 +23,7 @@ function App() {
         <section id="side-by-side" className='flex min-h-0 flex-1 gap-4'>
           <Sidebar />
 
-          <main className="min-h-0 min-w-0 flex-1 overflow-auto">
+          <main className="min-h-0 min-w-0 flex flex-1 overflow-auto">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/layers" element={<LayerConfiguration />} />

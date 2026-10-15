@@ -26,7 +26,7 @@ const dummyLayers = [
 
 export default function LayerConfiguration() {
     return (
-        <div className="flex h-full min-h-0 flex-col overflow-hidden">
+        <div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
             <div className="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-3">
                 <div>
                     <h1 className="text-2xl font-bold text-white">Layer Configuration</h1>

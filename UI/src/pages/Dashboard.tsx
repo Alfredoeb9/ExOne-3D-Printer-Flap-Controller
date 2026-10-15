@@ -91,7 +91,7 @@ const progress = "20%";
 
 export default function Dashboard() {
     return (
-        <div>
+        <div id="dashboard" className="min-h-0 min-w-0 flex-1 overflow-auto">
             <div className="mb-4">
                 <h1 className="text-2xl font-bold text-white">Dashboard</h1>
                 <p className="text-slate-400">Monitor system status and current print progress</p>
@@ -123,7 +123,7 @@ export default function Dashboard() {
                 <div className="status_tab flex-1 bg-slate-800 p-4 rounded">
                     <div>
                         <h2 className="text-lg font-semibold text-slate-400 pb-1">Current Layer</h2>
-                        <p className="text-white"> <span className="text-2xl">42</span> / 100</p>
+                        <p className="text-white"> <span className="text-2xl">{progress.replace("%", "")}</span> / 100</p>
                     </div>
 
                     <div className="w-full bg-slate-700 h-4 rounded mt-3">
@@ -151,9 +151,9 @@ export default function Dashboard() {
 
             </div>
 
-            <div id="main_panels" className="flex flex-col gap-4 mt-4 xl:flex-row">
+            <div id="main_panels" className="flex flex-1 flex-col min-h-0 overflow-auto gap-4 mt-4 xl:flex-row">
                 {/* exone diagram */}
-                <div className="grid min-w-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="grid h-80 min-w-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2">
                     <div id="exone_diagram" className="bg-slate-600 p-4 rounded flex-1">
                         <h2 className="text-lg font-semibold text-slate-400 pb-1">ExOne Diagram</h2>
                         {/* Diagram content goes here */}
@@ -170,13 +170,13 @@ export default function Dashboard() {
                 {/* recent activiy */}
                 <div
                     id="recent_activity"
-                    className="flex h-80 min-w-0 flex-col rounded bg-slate-800 p-4 xl:w-80 xl:shrink-0 2xl:h-100"
+                    className="flex h-80 min-w-0 flex-col rounded bg-slate-800 p-4 xl:w-80 xl:shrink-0 2xl:h-140"
                 >
                     <h2 className="shrink-0 pb-3 text-lg font-semibold text-slate-400">
                         Recent Activity
                     </h2>
 
-                    <div className="min-h-0 flex-1 overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto">
                         <ul className="space-y-3 text-white">
                             {sortedActivities.map((activity) => (
                                 <li key={activity.id} className="flex items-start gap-2">
