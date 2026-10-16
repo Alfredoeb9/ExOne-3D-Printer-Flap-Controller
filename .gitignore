@@ -1,0 +1,6 @@
+.mypy_cache
+
+UI/node_modules/
+UI/package-lock.json
+UI/.next/
+UI/.env
