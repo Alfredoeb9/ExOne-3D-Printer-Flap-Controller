@@ -1,10 +1,20 @@
 import { useEffect, useRef, useState } from "react";
+import { saveRecipe, type RecipePayload } from "../services/api";
+import NotificationPopUp from "../components/notificationPopUp";
 
 export default function LayerConfiguration() {
     const [layers, setLayers] = useState<{ id: number; flapA: string; flapB: string }[]>([]);
+    const [recipeName, setRecipeName] = useState("");
+    const [totalLayers, setTotalLayers] = useState(0);
+    const [isSaving, setIsSaving] = useState(false);
     const [editingLayerId, setEditingLayerId] = useState<number | null>(null);
     const [isAddLayerOpen, setIsAddLayerOpen] = useState(false);
     const dialogRef = useRef<HTMLDialogElement>(null);
+    const [notification, setNotification] = useState<{
+        id: number;
+        message: string;
+        status: "error" | "success";
+    } | null>(null);
 
     useEffect(() => {
         const dialog = dialogRef.current;
@@ -56,6 +66,82 @@ export default function LayerConfiguration() {
         setLayers((currentLayers) => currentLayers.filter((layer) => layer.id !== id));
     }
 
+    function buildRecipePayload(): RecipePayload {
+        return {
+            recipe_name: recipeName,
+            total_layers: totalLayers,
+            actions: [...layers]
+                .sort((a, b) => a.id - b.id)
+                .map((layer) => ({
+                    layer: layer.id,
+                    flap_a: layer.flapA.toLowerCase() as "open" | "closed",
+                    flap_b: layer.flapB.toLowerCase() as "open" | "closed",
+                })),
+        };
+    }
+
+    function validateRecipe(recipe: RecipePayload): string | null {
+        if (!recipe.recipe_name) return "Recipe name is required.";
+
+        if (!Number.isInteger(recipe.total_layers) || recipe.total_layers < 1) {
+            return "Total layers must be a whole number greater than 0.";
+        }
+
+        if (recipe.actions.length === 0) return "Add at least one layer.";
+
+        if (recipe.actions.some((action) => action.layer > recipe.total_layers)) {
+            return "A layer number exceeds the total layers.";
+        }
+
+        if (new Set(recipe.actions.map((action) => action.layer)).size !== recipe.actions.length) {
+            return "Layer numbers must be unique.";
+        }
+
+        return null;
+    }
+
+    async function handleSaveRecipe() {
+    const recipe = buildRecipePayload();
+    const error = validateRecipe(recipe);
+
+    if (error) {
+        setNotification({ id: Date.now(), message: error, status: "error" });
+        return;
+    }
+
+    setIsSaving(true);
+        try {
+            await saveRecipe(recipe);
+            setNotification({ id: Date.now(), message: "Recipe saved.", status: "success" });
+        } catch (err) {
+            setNotification({
+                id: Date.now(),
+                message: err instanceof Error ? err.message : "Could not save the recipe.",
+                status: "error",
+            });
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
+    function handleExportJSON() {
+        const recipe = buildRecipePayload();
+        const error = validateRecipe(recipe);
+
+        if (error) {
+            setNotification({ id: Date.now(), message: error, status: "error" });
+            return;
+        }
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipe, null, 2));
+        const downloadAnchorNode = document.createElement("a");
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", `${recipe.recipe_name || "recipe"}.json`);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+
     return (
         <div className="flex h-full min-h-0 w-full flex-col overflow-hidden">
             <div className="mb-4 flex shrink-0 flex-wrap items-center justify-between gap-3">
@@ -97,14 +183,40 @@ export default function LayerConfiguration() {
 
             <div className="mt-4 flex flex-col gap-3 border border-slate-600 p-4 bg-[#0B1A2B]">
                 <h2 className="text-xl font-bold text-white">Recipe Settings</h2>
-                <div className="flex gap-3">
-                    <input type="text" placeholder="Recipe Name" className="flex-1 rounded border border-slate-600 bg-slate-800 px-4 py-2 text-white" />
-                    <input type="number" placeholder="Total Layers" className="flex-1 rounded border border-slate-600 bg-slate-800 px-4 py-2 text-white" />
-                </div>
-                <div className="flex gap-3">
-                    <button className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white">Save Recipe</button>
-                    <button className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Export JSON</button>
-                </div>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                <input
+                    type="text"
+                    placeholder="Recipe Name"
+                    value={recipeName}
+                    onChange={(e) => setRecipeName(e.target.value)}
+                    className="flex-1 rounded border border-slate-600 bg-slate-800 px-4 py-2 text-white"
+                />
+                <input
+                    type="number"
+                    min="1"
+                    placeholder="Total Layers"
+                    value={totalLayers}
+                    onChange={(e) => setTotalLayers(Number(e.target.value))}
+                    className="flex-1 rounded border border-slate-600 bg-slate-800 px-4 py-2 text-white"
+                />
+            </div>
+            <div className="flex gap-3">
+                <button
+                    type="button"
+                    onClick={handleSaveRecipe}
+                    disabled={isSaving}
+                    className="cursor-pointer rounded bg-green-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    {isSaving ? "Saving..." : "Save Recipe"}
+                </button>
+                <button
+                    type="button"
+                    onClick={handleExportJSON}
+                    className="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white"
+                >
+                    Export JSON
+                </button>
+            </div>
             </div>
 
             <dialog
@@ -164,6 +276,14 @@ export default function LayerConfiguration() {
                     </div>
                 </form>
             </dialog>
+
+            {notification && (
+                <NotificationPopUp
+                    key={notification.id}
+                    message={notification.message}
+                    status={notification.status}
+                />
+            )}
         </div>
     );
 }

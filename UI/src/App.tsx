@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar'
 import LayerConfiguration from './pages/LayerConfiguration'
 import ManualControl from './pages/ManualControl'
 import Settings from './pages/Settings'
+import RunConfiguration from './pages/RunConfiguration'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,6 +25,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/layers" element={<LayerConfiguration />} />
+              <Route path="/run" element={<RunConfiguration />} />
               <Route path="/manual" element={<ManualControl />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<h1>Page not found</h1>} />

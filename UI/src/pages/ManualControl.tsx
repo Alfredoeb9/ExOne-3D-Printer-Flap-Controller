@@ -1,21 +1,40 @@
 import { useState } from "react";
-import { runManualTest } from "../services/api";
+import { runManualTest, setFlapPosition, type FlapName, type FlapPosition } from "../services/api";
 import NotificationPopUp from "../components/notificationPopUp";
 
-// const progress = "100%";
-
 export default function ManualControl() {
-    const [flapA, setFlapA] = useState("Close");
-    const [flapB, setFlapB] = useState("Close");
+    const [flapA, setFlapA] = useState<FlapPosition>("closed");
+    const [flapB, setFlapB] = useState<FlapPosition>("closed");
+    const [pendingFlap, setPendingFlap] = useState<FlapName | null>(null);
+    const [commandError, setCommandError] = useState("");
     const [progress, setProgress] = useState("100%");
     const [isTestRunning, setIsTestRunning] = useState(true);
-    const handleFlapAChange = (state: string) => setFlapA(state);
-    const handleFlapBChange = (state: string) => setFlapB(state);
+    const handleFlapAChange = (state: FlapPosition) => setFlapA(state);
+    const handleFlapBChange = (state: FlapPosition) => setFlapB(state);
     const [flapAStatus, setFlapAStatus] = useState("OK");
     const [flapBStatus, setFlapBStatus] = useState("OK");
     const [testError, setTestError] = useState("");
     // const handleFlapAStatusChange = (status: string) => setFlapAStatus(status);
     // const handleFlapBStatusChange = (status: string) => setFlapBStatus(status);
+
+    async function commandFlap(flap: FlapName, position: FlapPosition) {
+        setPendingFlap(flap);
+        setCommandError("");
+        
+        try {
+            const result = await setFlapPosition(flap, position);
+
+            if (flap === "A") {
+                setFlapA(result.commandPosition);
+            } else {
+                setFlapB(result.commandPosition);
+            }
+        } catch (error) {
+            setCommandError(error instanceof Error ? error.message : "Could not command the flap");
+        } finally {
+            setPendingFlap(null);
+        }
+    }
 
     async function handleRunTest() {
         setTestError("");
@@ -24,9 +43,7 @@ export default function ManualControl() {
             const result = await runManualTest();
             setIsTestRunning(result.status === "running");
         } catch (error) {
-            setTestError(
-                error instanceof Error ? error.message : "Could not start the test",
-            );
+            setTestError(error instanceof Error ? error.message : "Could not start the test");
         }
     }
 
@@ -44,18 +61,20 @@ export default function ManualControl() {
                         <h2 className="text-sm font-semibold">Flap A</h2>
                     </div>
 
-                    <p className={`mt-1 text-xs ${flapA === "Open" ? "text-emerald-400" : "text-slate-400"}`}>{flapA}</p>
+                    <p className={`mt-1 text-xs ${flapA === "open" ? "text-emerald-400" : "text-slate-400"}`}>{flapA}</p>
 
                     <div className="mt-2 grid grid-cols-2 gap-2 h-20 2xl:h-[200px]">
                         <button
-                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapA === "Open" ? "bg-emerald-500" : "bg-slate-800"}`}
-                            onClick={() => handleFlapAChange("Open")}
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapA === "open" ? "bg-emerald-500" : "bg-slate-800"}`}
+                            disabled={pendingFlap === "A"}
+                            onClick={() => void commandFlap("A", "open")}
                         >
                             Open
                         </button>
                         <button
-                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapA === "Close" ? "bg-blue-500" : "bg-slate-800"}`}
-                            onClick={() => handleFlapAChange("Close")}
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapA === "closed" ? "bg-blue-500" : "bg-slate-800"}`}
+                            disabled={pendingFlap === "A"}
+                            onClick={() => void commandFlap("A", "closed")}
                         >
                             Close
                         </button>
@@ -92,18 +111,20 @@ export default function ManualControl() {
                         <h2 className="text-sm font-semibold">Flap B</h2>
                     </div>
 
-                    <p className={`mt-1 text-xs ${flapB === "Open" ? "text-emerald-400" : "text-slate-400"}`}>{flapB}</p>
+                    <p className={`mt-1 text-xs ${flapB === "open" ? "text-emerald-400" : "text-slate-400"}`}>{flapB}</p>
 
                     <div className="mt-2 grid grid-cols-2 gap-2 h-20 2xl:h-[200px]">
                         <button
-                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapB === "Open" ? "bg-emerald-500" : "bg-slate-800"}`}
-                            onClick={() => handleFlapBChange("Open")}
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapB === "open" ? "bg-emerald-500" : "bg-slate-800"}`}
+                            disabled={pendingFlap === "B"}
+                            onClick={() => void commandFlap("B", "open")}
                         >
                             Open
                         </button>
                         <button
-                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapB === "Close" ? "bg-blue-500" : "bg-slate-800"}`}
-                            onClick={() => handleFlapBChange("Close")}
+                            className={`cursor-pointer rounded px-3 py-2 text-sm text-white ${flapB === "closed" ? "bg-blue-500" : "bg-slate-800"}`}
+                            disabled={pendingFlap === "B"}
+                            onClick={() => void commandFlap("B", "closed")}
                         >
                             Close
                         </button>

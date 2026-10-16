@@ -3,6 +3,7 @@ import { NavLink } from 'react-router'
 const navigation = [
   { to: '/', label: 'Dashboard' },
   { to: '/layers', label: 'Layer Configuration' },
+  { to: '/run', label: 'Run Configuration' },
   { to: '/manual', label: 'Manual Control' },
   { to: '/settings', label: 'Settings' },
 ]
