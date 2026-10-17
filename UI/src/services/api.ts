@@ -17,8 +17,8 @@ export type RecipePayload = {
 
 type FlapCommandResponse = {
     flap: FlapName;
-    commandPosition: FlapPosition;
-    status: "command";
+    commandedPosition: FlapPosition;
+    status: "commanded";
 };
 
 type ManualTestResponse = {
@@ -48,10 +48,15 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     return response.json() as Promise<T>;
 }
 
-export function runManualTest(): Promise<ManualTestResponse> {
+export function runManualTest(flapA: FlapPosition, flapB: FlapPosition): Promise<ManualTestResponse> {
     return request<ManualTestResponse>("/api/manual-test/run", {
         method: "POST",
+        body: JSON.stringify({ flap_a: flapA, flap_b: flapB }),
     });
+}
+
+export function stopManualTest(): Promise<{ status: "stopped" | "idle" }> {
+    return request("/api/manual-test/stop", { method: "POST" });
 }
 
 export function setFlapPosition(flap: FlapName, position: FlapPosition): Promise<FlapCommandResponse> {
